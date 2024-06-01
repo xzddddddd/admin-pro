@@ -32,13 +32,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response: AxiosResponse) => {
         if (response.status === 200) {
-            return response.data;
+            return response;
         }
         ElMessage({
             message: getMessageInfo(response.status),
             type: 'error'
         });
-        return response.data;
+        return response;
     },
     (error: any) => {
         const { response } = error;
@@ -63,6 +63,7 @@ const requestInstance = <T = any>(config: AxiosRequestConfig): Promise<T> => {
     return new Promise((resolve, reject) => {
         service.request<any, AxiosResponse<BaseResponse>>(conf).then((res: AxiosResponse<BaseResponse>) => {
             const data = res.data; // 如果data.code为错误代码返回message信息
+            console.log('🚀 ~ service.request<any,AxiosResponse<BaseResponse>> ~ data:', data);
             if (data.code != 0) {
                 ElMessage({
                     message: data.message,

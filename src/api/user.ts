@@ -1,22 +1,22 @@
-import { post } from "@/http/request";
+import { post } from '@/http/request';
 
 export type LoginRequest = {
-  username: string;
-  password: string;
+    username: string;
+    password: string;
 };
 export type reLoginRequest = {
-  accessToken: string;
+    accessToken: string;
 };
 export type LoginResponse = {
-  username: string;
-  roles: string[];
-  accessToken: string;
+    username: string;
+    roles: string[];
+    accessToken: string;
 };
 
 export const userLogin = async (data: LoginRequest) => {
-  return post<LoginResponse>({}, "/user/login", data);
+    return post<LoginResponse>({}, '/login', data);
 };
 
 export const refreshUserInfo = async (data?: reLoginRequest) => {
-  return post<LoginResponse>({}, "/getUserInfo", data);
+    return post<LoginResponse>({}, '/getUserInfo', data);
 };

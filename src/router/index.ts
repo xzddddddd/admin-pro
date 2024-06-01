@@ -1,5 +1,5 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
-import NProgress from "nprogress";
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import NProgress from 'nprogress';
 // import 'nprogress/nprogress.css'
 // const routes:Array<RouteRecordRaw> = [
 //   {
@@ -11,31 +11,38 @@ import NProgress from "nprogress";
 //   }
 // ]
 export const aboutRouter = {
-  path: "/about",
-  name: "about",
-  component: () => import("@/views/about/index.vue"),
-  meta: {},
-  children: [],
+    path: '/about',
+    name: 'about',
+    component: () => import('@/views/about/index.vue'),
+    meta: {},
+    children: []
 } as RouteRecordRaw;
-const modules: Record<string, any> = import.meta.glob("./modules/*.ts", {
-  eager: true,
+const modules: Record<string, any> = import.meta.glob('./modules/*.ts', {
+    eager: true
 });
 const routes: Array<RouteRecordRaw> = [];
 Object.keys(modules).forEach((key) => {
-  routes.push(modules[key].default);
+    routes.push(modules[key].default);
 });
 routes.push(aboutRouter);
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
+    history: createWebHistory(),
+    routes
 });
-router.beforeEach((to, from, next) => {
-  // to and from are both route objects. must call `next`.
-  NProgress.start();
-  next();
+const noStatusPage = ['/login', '/about'];
+router.beforeEach((_to, _from, next) => {
+    // to and from are both route objects. must call `next`.
+    NProgress.start();
+    const token = sessionStorage.getItem('userInfo');
+    const userIsLogin = token ? true : false;
+    if (userIsLogin || noStatusPage.includes(_to.path)) {
+        next();
+    } else {
+        next('/login');
+    }
 });
 router.afterEach((to, from) => {
-  // to and from are both route objects.
-  NProgress.done();
+    // to and from are both route objects.
+    NProgress.done();
 });
 export default router;
